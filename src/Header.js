@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link,NavLink } from 'react-router-dom';
 
 import Button from './Components/Button';
 import './App.css';
@@ -16,21 +16,21 @@ const Header = () => (
       <img src={logo} alt="AEM Movie Festival" draggable="false" />
     </Link>
     <Container>
-      <Link to="/">
+      <NavLink to="/about" activeClassName="isActive">
         <li>About</li>
-      </Link>
-      <Link to="/">
+      </NavLink>
+      <NavLink to="/movies" activeClassName="isActive">
         <li>Movies</li>
-      </Link>
-      <Link to="/">
+      </NavLink>
+      <NavLink to="/news" activeClassName="isActive">
         <li>News</li>
-      </Link>
-      <Link to="/">
+      </NavLink>
+      <NavLink to="/gallery" activeClassName="isActive">
         <li>Gallery</li>
-      </Link>
-      <Link to="/">
-        <li>Contacts</li>
-      </Link>
+      </NavLink>
+      <NavLink to="/contact" activeClassName="isActive">
+        <li>Contact</li>
+      </NavLink>
     </Container>
     <Bottom>
       <Button title="Buy a ticket" />
@@ -55,10 +55,12 @@ const Header = () => (
 export default Header;
 
 const Container = styled.ul`
-  > a {
-    color: inherit;
-  }
   list-style: none;
+  a{
+    color: inherit;
+  font-weight: 700;
+  font-size: 14px;
+  }
   li {
     cursor: pointer;
     padding: 10px 0px 10px 20px;
@@ -68,7 +70,7 @@ const Container = styled.ul`
       content: '';
       display: block;
       width: 0px;
-      height: 2.5px;
+      height: 3px;
       top: 50%;
       left: -40px;
       background: #ffe355;
@@ -81,6 +83,14 @@ const Container = styled.ul`
   }
   li:hover:before {
     width: 50px;
+  }
+  .isActive {
+    li{
+      padding-left: 40px;
+      &::before {
+      width: 70px;
+      }
+    }
   }
 `;
 const Bottom = styled.div`
