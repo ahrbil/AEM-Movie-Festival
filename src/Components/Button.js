@@ -3,13 +3,13 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 const Button = props => <Btn>{props.title}</Btn>;
-
 Button.propTypes = {
   title: PropTypes.string.isRequired,
 };
 
-const Btn = styled.div`
-  width: 100%;
+const Btn = styled.button`
+  max-width: 100%;
+  height: 2.7rem;
   background: #ffdd2d;
   color: #000;
   border: 0;
@@ -19,6 +19,7 @@ const Btn = styled.div`
   vertical-align: baseline;
   font-size: 15px;
   text-align: center;
+  outline: none;
   font-family: work-sans;
   &:hover {
     background: #ffe355;

@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import Slider from 'react-slick';
 
-import { button, Button } from './MeanSlider';
+import { Button } from './MeanSlider';
+
+import play from '../assets/play.svg';
 
 import rightArrow from '../assets/right-arrow.svg';
 import leftArrow from '../assets/left-arrow.svg';
@@ -11,8 +13,6 @@ class LittleSlider extends Component {
   constructor(props) {
     super(props);
     this.sliderRef = React.createRef();
-    // this.next = this.next.bind(this);
-    // this.previous = this.previous.bind(this);
   }
   state = {
     loading: true,
@@ -21,9 +21,9 @@ class LittleSlider extends Component {
   async componentDidMount() {
     try {
       const res = await fetch(
-        `https://api.themoviedb.org/3/movie/${
-          this.props.match.params.id
-        }/images?api_key=abd82c60cb3ee473e5d38d6e8a90cfa6`,
+        `https://api.themoviedb.org/3/movie/${this.props.match.params.id
+          .split('-')
+          .pop()}/images?api_key=${process.env.REACT_APP_TMDB_ID}`,
       );
       const movieImages = await res.json();
       const posters = [...movieImages.backdrops];
@@ -39,7 +39,7 @@ class LittleSlider extends Component {
   next = () => {
     this.sliderRef.current.slickNext();
   };
-  previous= () => {
+  previous = () => {
     this.sliderRef.current.slickPrev();
   };
   render() {
@@ -81,16 +81,18 @@ class LittleSlider extends Component {
           </BtnLeft>
         </BtnWrapper>
         <Slider ref={this.sliderRef} {...settings}>
+          {this.state.posters.slice(0, 1).map(poster => (
+            <SliderItem key={poster.file_path} backdrop={`http://image.tmdb.org/t/p/w1280/${poster.file_path}`}>
+              <PlayBtn onClick={this.props.play}>
+                <img src={play} alt="" />
+              </PlayBtn>
+              <p>Trailer</p>
+            </SliderItem>
+          ))}
           {this.state.posters
             .slice(1, 5)
             .map(poster => (
-              <SliderItem>
-                {this.state.loading ? (
-                  <h2>loading</h2>
-                ) : (
-                  <img src={`http://image.tmdb.org/t/p/w1280/${poster.file_path}`} />
-                )}
-              </SliderItem>
+              <SliderItem key={poster.file_path} backdrop={`http://image.tmdb.org/t/p/w1280/${poster.file_path}`} />
             ))}
         </Slider>
       </SliderWrapper>
@@ -99,12 +101,43 @@ class LittleSlider extends Component {
 }
 
 const SliderItem = styled.div`
+  position: relative;
   overflow: hidden;
   border-radius: 10px;
-  margin-right: 40px;
+  height: 130px;
+  background: url(${props => props.backdrop});
+  background-size: cover;
+  background-position: center;
+  text-align: center;
+  > p {
+    margin-top: 100px;
+    font-weight: bold;
+    font-size: 3rem;
+  }
+`;
+const PlayBtn = styled.button`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  text-align: center;
+  outline: none;
+  border: none;
+  background: #ffdd2d;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &:hover {
+    cursor: pointer;
+  }
   img {
-    width: 280px;
-    height: auto;
+    width: 40px;
+    height: 40px;
+    transform: translate(3px,4px);
   }
 `;
 const SliderWrapper = styled.div`

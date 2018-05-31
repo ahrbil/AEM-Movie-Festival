@@ -1,5 +1,20 @@
-body {
+*,*::before,*::after{
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  box-sizing: border-box;
 }
+@font-face {
+  font-family: work-sans;
+  src: url("../src/fonts/Work sans.ttf");
+}
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700.800,900');
+body {
+  /* font-family: sans-serif; */
+  /* font-family: work-sans; */
+  font-family: 'Montserrat', sans-serif;
+}
+body > a {
+  text-decoration: none;
+}
+
+/* background-image: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,.1) 50%,rgba(0,0,0,.1)); */

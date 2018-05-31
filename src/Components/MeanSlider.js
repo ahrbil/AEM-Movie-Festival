@@ -10,35 +10,17 @@ import leftArrow from '../assets/left-arrow.svg';
 
 const BACKDROP_PATH = 'http://image.tmdb.org/t/p/w1280';
 
-export default class SimpleSlider extends Component {
+class MeanSlider extends Component {
   constructor(props) {
     super(props);
-    this.next = this.next.bind(this);
-    this.previous = this.previous.bind(this);
-    this.state = {
-      movies: [],
-    };
+    this.sliderRef = React.createRef();
   }
-  async componentDidMount() {
-    try {
-      const res = await fetch(
-        'https://api.themoviedb.org/3/movie/now_playing?api_key=abd82c60cb3ee473e5d38d6e8a90cfa6&language=en-US&page=1',
-      );
-      const movies = await res.json();
-      // console.table(movies.results);
-      this.setState({ // eslint-disable-line
-        movies: movies.results,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  next() {
-    this.sliderRef.slickNext();
-  }
-  previous() {
-    this.sliderRef.slickPrev();
-  }
+  next = () => {
+    this.sliderRef.current.slickNext();
+  };
+  previous = () => {
+    this.sliderRef.current.slickPrev();
+  };
   render() {
     const settings = {
       infinite: true,
@@ -51,15 +33,15 @@ export default class SimpleSlider extends Component {
       pauseOnHover: false,
       accessibility: false,
       adaptiveHeight: true,
-      draggable: false,
-      swipe: false,
-      touchMove: false,
+      draggable: true,
+      swipe: true,
+      touchMove: true,
     };
     return (
       <SliderContainer>
-        <Slider ref={node => (this.sliderRef = node)} {...settings}>
-          {this.state.movies.slice(0, 3).map(movie => (
-            <SliderItem backdrop={`${BACKDROP_PATH}${movie.backdrop_path}`}>
+        <Slider ref={this.sliderRef} {...settings} {...this.props}>
+          {this.props.movies.slice(0, 3).map(movie => (
+            <SliderItem backdrop={`${BACKDROP_PATH}${movie.backdrop_path}`} key={movie.id}>
               <div>
                 <h1>{movie.title}</h1>
                 <p>{movie.overview}</p>
@@ -78,12 +60,6 @@ export default class SimpleSlider extends Component {
   }
 }
 
-const SliderContainer = styled.div`
-  width: 100%;
-  height: 100vh;
-  position: relative;
-  overflow: hidden;
-`;
 const progressBarAnimation = keyframes`
   from {
     width: 0px;
@@ -101,7 +77,8 @@ const SliderItem = styled.div`
   font-size: 3rem;
   position: relative;
   outline: none;
-  background: url(${props => props.backdrop}) no-repeat;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(255, 255, 255, 0) 100%),
+    url(${props => props.backdrop}) no-repeat;
   background-size: cover;
   background-position: center;
   &:before {
@@ -112,9 +89,9 @@ const SliderItem = styled.div`
     position: absolute;
     bottom: 0;
     left: 0;
-    animation: ${progressBarAnimation} 3000ms ease-out ;
+    animation: ${progressBarAnimation} 3000ms ease-out;
   }
-   div {
+  div {
     align-self: center;
     margin: 0 4rem -7rem;
     width: 50%;
@@ -130,6 +107,7 @@ const SliderItem = styled.div`
     }
   }
 `;
+
 const Button = styled.button`
   position: absolute;
   border: none;
@@ -154,6 +132,41 @@ const Button = styled.button`
     transform: translate(-50%, -50%);
   }
 `;
+export { Button };
 const ButtonRight = Button.extend`
   bottom: 125px;
 `;
+
+const SliderContainer = styled.div`
+  width: 100%;
+  height: 100vh;
+  display: block;
+  position: relative;
+  overflow: hidden;
+  @media (max-width: 990px){
+    height: calc(100vh - 160px);
+      ${Button}{
+        display: none;
+      }
+      ${ButtonRight} {
+        display: none;
+      }
+    ${SliderItem} {
+      p {
+        display: none;
+      }
+      div {
+        margin: 0;
+        padding: 10px
+        width: 100%;
+        margin-left: 30px;
+        height: auto;
+        border-left: 7px solid #ffdd2d;
+        h1 {
+          margin: 0;
+        }
+      }
+    }
+  }
+`;
+export default MeanSlider;

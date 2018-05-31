@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import VanillaTilt from 'vanilla-tilt';
+import slug from 'slug';
 
 const POSTER_PATH = 'http://image.tmdb.org/t/p/w185';
 
@@ -14,21 +15,21 @@ class Movie extends Component {
 
   componentDidMount() {
     VanillaTilt.init(this.rootNode.current, {
-      max: 25,
+      max: 40,
       speed: 400,
       glare: true,
       scale: 1.1,
-      'max-glare': 0.3,
+      'max-glare': 0.8,
     });
-    console.log(this.tilt);
   }
   render() {
     const { movie } = this.props;
     return (
       <MovieCard>
-        <Link to={`${movie.id}`}>
-          <div ref={this.rootNode}>
+        <Link to={`/movies/${slug(movie.title)}-${slug(movie.id)}`}>
+          <div style={{ background: 'transparent' }}>
             <Poster
+              innerRef={this.rootNode}
               src={`${POSTER_PATH}${movie.poster_path}`}
               alt={movie.title}
               draggable="false"
@@ -63,6 +64,7 @@ const MovieCard = styled.div`
   }
   p {
     color: rgba(141, 141, 141, 0.705);
+    margin-bottom: 10px;
   }
   img {
     margin-bottom: 18px;
